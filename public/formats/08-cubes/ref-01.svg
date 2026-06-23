@@ -1,0 +1,54 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 280">
+  <rect width="400" height="280" fill="#0C0A06"/>
+
+  <!-- Label -->
+  <text x="20" y="22" font-family="monospace" font-size="7" fill="#22d3ee" letter-spacing="3" opacity="0.5">FIG. 08 — DISSOLVABLE CUBE</text>
+  <line x1="20" y1="28" x2="380" y2="28" stroke="#22d3ee" stroke-width="0.4" opacity="0.15"/>
+
+  <!-- Water glass silhouette -->
+  <path d="M130 230 L145 80 L255 80 L270 230 Z" fill="#0a0f12" stroke="#22d3ee" stroke-width="0.8" opacity="0.25"/>
+  <!-- water surface -->
+  <path d="M147 140 Q200 132 253 140" fill="none" stroke="#22d3ee" stroke-width="1" opacity="0.35"/>
+  <!-- water body -->
+  <path d="M148 142 Q200 134 252 142 L265 228 L135 228 Z" fill="#0d1a22" opacity="0.4"/>
+
+  <!-- Isometric cube — top face -->
+  <polygon points="200,48 248,72 200,96 152,72" fill="#1a1a2e" stroke="#22d3ee" stroke-width="1" opacity="0.9"/>
+  <!-- left face -->
+  <polygon points="152,72 200,96 200,148 152,124" fill="#111120" stroke="#22d3ee" stroke-width="1" opacity="0.8"/>
+  <!-- right face -->
+  <polygon points="200,96 248,72 248,124 200,148" fill="#0d0d18" stroke="#22d3ee" stroke-width="1" opacity="0.8"/>
+
+  <!-- Dissolving cracks on cube -->
+  <line x1="176" y1="84"  x2="185" y2="90"  stroke="#22d3ee" stroke-width="0.6" opacity="0.5"/>
+  <line x1="220" y1="76"  x2="228" y2="82"  stroke="#22d3ee" stroke-width="0.6" opacity="0.4"/>
+  <line x1="165" y1="105" x2="172" y2="112" stroke="#22d3ee" stroke-width="0.6" opacity="0.45"/>
+  <line x1="225" y1="100" x2="232" y2="108" stroke="#22d3ee" stroke-width="0.5" opacity="0.35"/>
+
+  <!-- Effervescent bubbles rising -->
+  <circle cx="178" cy="128" r="3" fill="none" stroke="#22d3ee" stroke-width="0.8" opacity="0.6"/>
+  <circle cx="178" cy="115" r="2" fill="none" stroke="#22d3ee" stroke-width="0.7" opacity="0.45"/>
+  <circle cx="178" cy="105" r="1.5" fill="none" stroke="#22d3ee" stroke-width="0.6" opacity="0.3"/>
+
+  <circle cx="220" cy="122" r="4"   fill="none" stroke="#22d3ee" stroke-width="0.8" opacity="0.55"/>
+  <circle cx="222" cy="108" r="2.5" fill="none" stroke="#22d3ee" stroke-width="0.7" opacity="0.4"/>
+  <circle cx="220" cy="97"  r="1.5" fill="none" stroke="#22d3ee" stroke-width="0.6" opacity="0.25"/>
+
+  <circle cx="200" cy="135" r="2.5" fill="none" stroke="#22d3ee" stroke-width="0.7" opacity="0.5"/>
+  <circle cx="200" cy="122" r="1.8" fill="none" stroke="#22d3ee" stroke-width="0.6" opacity="0.35"/>
+
+  <!-- Cube label -->
+  <text x="200" y="72" text-anchor="middle" font-family="monospace" font-size="7" fill="#22d3ee" letter-spacing="1" opacity="0.7">DHM</text>
+
+  <!-- Status badge -->
+  <rect x="148" y="158" width="104" height="22" rx="3" fill="#1a0a0a" stroke="#C4324E" stroke-width="0.8" opacity="0.8"/>
+  <text x="200" y="173" text-anchor="middle" font-family="monospace" font-size="7" fill="#C4324E" letter-spacing="2" opacity="0.9">SHELVED</text>
+
+  <!-- Bottom annotation -->
+  <text x="200" y="200" text-anchor="middle" font-family="monospace" font-size="6" fill="#9ca3af" opacity="0.5">Blocked — clean-label binder not found</text>
+
+  <!-- Brand label strip -->
+  <rect x="60" y="236" width="280" height="34" rx="3" fill="#0a0805" stroke="#9ca3af" stroke-width="0.4" opacity="0.3"/>
+  <text x="200" y="250" text-anchor="middle" font-family="monospace" font-size="6" fill="#9ca3af" letter-spacing="2" opacity="0.6">SOIL CREST NATURALS</text>
+  <text x="200" y="263" text-anchor="middle" font-size="9.5" fill="#ffffff" opacity="0.7" font-style="italic">Daily Health Mix · Cube Concept</text>
+</svg>

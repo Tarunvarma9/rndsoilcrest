@@ -3,7 +3,60 @@
 import { useState } from "react";
 import { AgentConsole } from "./agent-console";
 import { FigModal } from "./fig-modal";
-import { FORMATS, type Format } from "@/lib/formats";
+import { FORMATS, type Format, type FormatImage } from "@/lib/formats";
+
+function CardThumbnail({ images }: { images: FormatImage[] }) {
+  const [loaded, setLoaded] = useState(false);
+  const [failed, setFailed] = useState(false);
+
+  if (images.length === 0) return null;
+
+  return (
+    <div className="relative w-full h-28 overflow-hidden">
+      {/* Placeholder shown until image loads or on failure */}
+      {!loaded && (
+        <div
+          className="absolute inset-0 flex items-center justify-center"
+          style={{ background: "rgba(34, 211, 238, 0.04)" }}
+        >
+          <span
+            className="text-xs tracking-widest uppercase opacity-20"
+            style={{ fontFamily: "var(--font-jetbrains-mono)", color: "var(--cyan)" }}
+          >
+            {failed ? "place image here →" : "···"}
+          </span>
+        </div>
+      )}
+
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img
+        src={images[0].src}
+        alt=""
+        className="absolute inset-0 w-full h-full object-cover transition-opacity duration-700"
+        style={{ opacity: loaded ? 0.92 : 0, color: "transparent" }}
+        onLoad={() => setLoaded(true)}
+        onError={() => setFailed(true)}
+      />
+
+      {loaded && (
+        <>
+          <div
+            className="absolute inset-0"
+            style={{
+              background: "linear-gradient(to bottom, transparent 50%, rgba(15,11,7,0.85) 100%)",
+            }}
+          />
+          <span
+            className="absolute bottom-2 right-2 text-xs opacity-40"
+            style={{ fontFamily: "var(--font-jetbrains-mono)", color: "var(--bone-muted)" }}
+          >
+            {images.length} ref
+          </span>
+        </>
+      )}
+    </div>
+  );
+}
 
 export function Dossier() {
   const [activeFormat, setActiveFormat] = useState<Format | null>(null);
@@ -23,8 +76,8 @@ export function Dossier() {
           Soil Crest Naturals — Confidential R&D Dossier
         </p>
         <h1
-          className="text-4xl md:text-6xl font-medium glow-violet"
-          style={{ fontFamily: "var(--font-fraunces)", color: "var(--bone)" }}
+          className="text-4xl md:text-6xl font-medium gradient-text"
+          style={{ fontFamily: "var(--font-fraunces)" }}
         >
           Daily Health Mix
         </h1>
@@ -75,53 +128,95 @@ export function Dossier() {
             <button
               key={fmt.id}
               onClick={() => setActiveFormat(fmt)}
-              className="fig-card p-6 text-left focus:outline-none focus-visible:ring-2 focus-visible:ring-violet-500"
+              className="fig-card text-left focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400 overflow-hidden"
             >
-              <p
-                className="text-xs tracking-[0.2em] uppercase mb-2"
-                style={{ fontFamily: "var(--font-jetbrains-mono)", color: "var(--cyan)" }}
+              {fmt.referenceImages && fmt.referenceImages.length > 0 && (
+                <CardThumbnail images={fmt.referenceImages} />
+              )}
+              <div className="p-6">
+                <p
+                  className="text-xs tracking-[0.2em] uppercase mb-2"
+                  style={{ fontFamily: "var(--font-jetbrains-mono)", color: "var(--cyan)" }}
+                >
+                  FIG. {String(fmt.id).padStart(2, "0")}
+                </p>
+                <h2
+                  className="text-lg font-medium mb-1"
+                  style={{ fontFamily: "var(--font-fraunces)", color: "var(--bone)" }}
+                >
+                  {fmt.name}
+                </h2>
+                <p
+                  className="text-xs"
+                  style={{ color: "var(--bone-muted)", fontFamily: "var(--font-inter)" }}
+                >
+                  {fmt.phase} · {fmt.status}
+                </p>
+              </div>
+            </button>
+          ))}
+
+          {/* FIG. 09 — GT-Routing Agent Console */}
+          <button
+            onClick={() => setAgentOpen(true)}
+            className="fig-card text-left focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400 overflow-hidden"
+            style={{ borderColor: "rgba(34,211,238,0.35)" }}
+          >
+            {/* GT header strip */}
+            <div
+              className="w-full px-6 pt-5 pb-3 flex items-center justify-between"
+              style={{ background: "rgba(34,211,238,0.04)", borderBottom: "1px solid rgba(34,211,238,0.1)" }}
+            >
+              <div className="flex items-center gap-2">
+                {/* GT-Routing image icon */}
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src="/gt-routing.webp" alt="GT-Routing" width={24} height={24} style={{ objectFit: "contain" }}/>
+                <span
+                  className="text-xs tracking-widest"
+                  style={{ fontFamily: "var(--font-jetbrains-mono)", color: "var(--cyan)", fontSize: "10px" }}
+                >
+                  GT-ROUTING
+                </span>
+              </div>
+              <span
+                className="text-xs opacity-40"
+                style={{ fontFamily: "var(--font-jetbrains-mono)", color: "var(--cyan)", fontSize: "9px" }}
               >
-                FIG. {String(fmt.id).padStart(2, "0")}
-              </p>
+                FIG. 09
+              </span>
+            </div>
+
+            <div className="p-6">
               <h2
                 className="text-lg font-medium mb-1"
                 style={{ fontFamily: "var(--font-fraunces)", color: "var(--bone)" }}
               >
-                {fmt.name}
+                R&D Agent Console
               </h2>
               <p
-                className="text-xs"
+                className="text-xs mb-3"
                 style={{ color: "var(--bone-muted)", fontFamily: "var(--font-inter)" }}
               >
-                {fmt.phase} · {fmt.status}
+                Auto-routes your question to the best specialist — Formulation, Sourcing, Compliance, Quality, Cost, or Market.
               </p>
-            </button>
-          ))}
-
-          {/* FIG. 09 — Agent Console */}
-          <button
-            onClick={() => setAgentOpen(true)}
-            className="fig-card p-6 text-left focus:outline-none focus-visible:ring-2 focus-visible:ring-violet-500"
-            style={{ borderColor: "rgba(139, 92, 246, 0.5)" }}
-          >
-            <p
-              className="text-xs tracking-[0.2em] uppercase mb-2"
-              style={{ fontFamily: "var(--font-jetbrains-mono)", color: "var(--violet)" }}
-            >
-              FIG. 09
-            </p>
-            <h2
-              className="text-lg font-medium mb-1"
-              style={{ fontFamily: "var(--font-fraunces)", color: "var(--bone)" }}
-            >
-              R&D Agent Console
-            </h2>
-            <p
-              className="text-xs"
-              style={{ color: "var(--bone-muted)", fontFamily: "var(--font-inter)" }}
-            >
-              AI · Live · 6 Specialists
-            </p>
+              <div className="flex flex-wrap gap-1">
+                {["Formulation","Sourcing","Compliance","Quality","Cost","Market"].map((s) => (
+                  <span
+                    key={s}
+                    className="text-xs px-1.5 py-0.5 rounded"
+                    style={{
+                      fontFamily: "var(--font-jetbrains-mono)",
+                      fontSize: "9px",
+                      color: "rgba(34,211,238,0.7)",
+                      background: "rgba(34,211,238,0.07)",
+                      border: "1px solid rgba(34,211,238,0.15)",
+                    }}
+                  >
+                    {s}
+                  </span>
+                ))}
+              </div>
+            </div>
           </button>
         </div>
       </section>

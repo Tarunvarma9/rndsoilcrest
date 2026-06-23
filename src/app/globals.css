@@ -2,16 +2,19 @@
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
 
-/* ── Soil Crest Design Tokens — Galaxy Edition ─────────────── */
+/* ── Soil Crest Design Tokens — Terra × GMP Edition ────────────
+   Background: warm earth (Terra)
+   Text/accents: GMP cyan/white palette
+──────────────────────────────────────────────────────────────── */
 :root {
-  --void: #020014;        /* deep space black */
-  --ash: #0D0A1E;         /* dark galaxy panel */
-  --bone: #F0EEFF;        /* cool white text */
-  --bone-muted: #9B93C4;  /* muted lavender */
-  --violet: #8B5CF6;      /* claude purple — primary accent */
-  --cyan: #22D3EE;        /* electric cyan — secondary accent */
-  --pink: #D946EF;        /* magenta — tertiary accent */
-  --ember: #8B5CF6;       /* alias kept for backward compat */
+  --void: #0C0A06;          /* deep earth — midnight soil */
+  --ash: #181209;           /* warm dark panel */
+  --bone: #FFFFFF;          /* white — GMP primary text */
+  --bone-muted: #9ca3af;    /* gray-400 — GMP secondary text */
+  --violet: #52C046;        /* moringa green — format accent */
+  --cyan: #22d3ee;          /* cyan-400 — GMP label/accent color */
+  --pink: #C4324E;          /* beetroot berry — error/tertiary */
+  --ember: #D4851E;         /* turmeric amber — border accent */
 }
 
 @custom-variant dark (&:is(.dark *));
@@ -142,26 +145,29 @@
   }
 }
 
-/* Galaxy nebula background — subtle grid with violet glow */
+/* ── Botanical atmosphere background ──────────────────────────
+   Warm amber glow from top (turmeric light),
+   moringa green hint from bottom-left (like light through leaves).
+   No grid — organic, not technical.
+──────────────────────────────────────────────────────────────── */
 .blueprint-bg {
   background-image:
-    radial-gradient(ellipse 80% 50% at 50% -20%, rgba(139, 92, 246, 0.12) 0%, transparent 60%),
-    linear-gradient(rgba(139, 92, 246, 0.04) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(139, 92, 246, 0.04) 1px, transparent 1px);
-  background-size: 100% 100%, 40px 40px, 40px 40px;
+    radial-gradient(ellipse 75% 50% at 50% -10%, rgba(212, 133, 30, 0.18) 0%, transparent 60%),
+    radial-gradient(ellipse 50% 40% at -5% 100%, rgba(82, 192, 70, 0.09) 0%, transparent 55%),
+    radial-gradient(ellipse 40% 35% at 105% 90%, rgba(196, 50, 78, 0.06) 0%, transparent 50%);
 }
 
-/* FIG card — glassy galaxy border with corner ticks */
+/* ── FIG card — warm botanical border with amber corner ticks ── */
 .fig-card {
-  border: 1px solid rgba(139, 92, 246, 0.25);
+  border: 1px solid rgba(212, 133, 30, 0.22);
   position: relative;
-  background: rgba(13, 10, 30, 0.6);
+  background: rgba(24, 18, 9, 0.65);
   backdrop-filter: blur(12px);
   transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 .fig-card:hover {
-  border-color: rgba(139, 92, 246, 0.7);
-  box-shadow: 0 0 24px rgba(139, 92, 246, 0.15), inset 0 0 24px rgba(139, 92, 246, 0.04);
+  border-color: rgba(212, 133, 30, 0.65);
+  box-shadow: 0 0 28px rgba(212, 133, 30, 0.12), inset 0 0 20px rgba(212, 133, 30, 0.04);
 }
 .fig-card::before,
 .fig-card::after {
@@ -183,34 +189,18 @@
   border-width: 0 1px 1px 0;
 }
 
-/* Grain overlay */
+/* ── Grain overlay — works perfectly for earth/soil texture ─── */
 .grain-overlay::before {
   content: "";
   position: fixed;
   inset: 0;
   pointer-events: none;
   z-index: 100;
-  opacity: 0.25;
+  opacity: 0.2;
   background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
 }
 
-/* Subtle scanlines */
-.scanlines::after {
-  content: "";
-  position: fixed;
-  inset: 0;
-  pointer-events: none;
-  z-index: 99;
-  background: repeating-linear-gradient(
-    0deg,
-    transparent,
-    transparent 3px,
-    rgba(139, 92, 246, 0.015) 3px,
-    rgba(139, 92, 246, 0.015) 4px
-  );
-}
-
-/* Reveal on scroll */
+/* ── Reveal on scroll ─────────────────────────────────────────── */
 .reveal {
   opacity: 0;
   transform: translateY(16px);
@@ -228,10 +218,44 @@
   }
 }
 
-/* Glow text */
+/* ── Gradient text — GMP style: cyan-400 → blue-500 ──────────── */
+.gradient-text {
+  background: linear-gradient(to right, #22d3ee, #818cf8);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ── Glow text ────────────────────────────────────────────────── */
 .glow-violet {
-  text-shadow: 0 0 20px rgba(139, 92, 246, 0.6), 0 0 40px rgba(139, 92, 246, 0.3);
+  text-shadow: 0 0 30px rgba(34, 211, 238, 0.35), 0 0 60px rgba(34, 211, 238, 0.15);
 }
 .glow-cyan {
   text-shadow: 0 0 20px rgba(34, 211, 238, 0.6), 0 0 40px rgba(34, 211, 238, 0.3);
 }
+
+/* ── GMP animations ───────────────────────────────────────────── */
+@keyframes pulse-cyan {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.4; }
+}
+.pulse-cyan { animation: pulse-cyan 2s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
+
+@keyframes ambient-glow {
+  0%, 100% { opacity: 0.3; transform: scale(1); }
+  50%       { opacity: 0.6; transform: scale(1.15); }
+}
+.ambient-glow { animation: ambient-glow 8s ease-in-out infinite; }
+
+/* ── Selection + scrollbar — GMP cyan ────────────────────────── */
+::selection {
+  background-color: rgba(34, 211, 238, 0.25);
+  color: #fff;
+}
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: rgba(0,0,0,0.3); }
+::-webkit-scrollbar-thumb {
+  background: rgba(34, 211, 238, 0.35);
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover { background: rgba(34, 211, 238, 0.65); }

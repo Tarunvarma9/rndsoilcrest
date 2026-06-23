@@ -7,7 +7,7 @@ export default async function Home() {
   const isUnlocked = cookieStore.get("sc_access")?.value === "1";
 
   return (
-    <main className="flex-1 blueprint-bg">
+    <main className="flex-1 blueprint-bg relative z-10">
       {isUnlocked ? <Dossier /> : <AccessGate />}
     </main>
   );

@@ -7,7 +7,7 @@ export function AccessGate() {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
-  async function handleSubmit(e: React.FormEvent) {
+  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     if (code.length !== 6) return;
     setLoading(true);
@@ -74,14 +74,16 @@ export function AccessGate() {
             width="24"
             height="16"
             rx="2"
-            stroke="var(--violet)"
+            stroke="var(--cyan)"
             strokeWidth="1.5"
+            strokeOpacity="0.7"
           />
           <path
             d="M13 18v-5a7 7 0 0 1 14 0v5"
-            stroke="var(--violet)"
+            stroke="var(--cyan)"
             strokeWidth="1.5"
             strokeLinecap="round"
+            strokeOpacity="0.7"
           />
           <circle cx="20" cy="26" r="2" fill="var(--cyan)" />
         </svg>
@@ -97,8 +99,8 @@ export function AccessGate() {
             onChange={(e) => setCode(e.target.value.replace(/\D/g, ""))}
             className="w-full text-center text-2xl tracking-[0.4em] py-3 px-4 rounded-none outline-none placeholder:opacity-30"
             style={{
-              background: "rgba(139, 92, 246, 0.06)",
-              border: "1px solid rgba(139, 92, 246, 0.3)",
+              background: "rgba(34, 211, 238, 0.05)",
+              border: "1px solid rgba(34, 211, 238, 0.28)",
               color: "var(--bone)",
               fontFamily: "var(--font-jetbrains-mono)",
             }}
@@ -119,9 +121,9 @@ export function AccessGate() {
             disabled={code.length !== 6 || loading}
             className="w-full py-3 text-sm tracking-widest uppercase transition-all disabled:opacity-40"
             style={{
-              background: "rgba(139, 92, 246, 0.15)",
-              border: "1px solid rgba(139, 92, 246, 0.5)",
-              color: "var(--violet)",
+              background: "rgba(34, 211, 238, 0.1)",
+              border: "1px solid rgba(34, 211, 238, 0.4)",
+              color: "var(--cyan)",
               fontFamily: "var(--font-jetbrains-mono)",
             }}
           >

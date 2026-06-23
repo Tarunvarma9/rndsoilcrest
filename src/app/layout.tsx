@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Fraunces, Inter, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
+import { ClientParticles } from "@/components/ClientParticles";
 
 const fraunces = Fraunces({
   variable: "--font-fraunces",
@@ -42,7 +43,13 @@ export default function RootLayout({
       lang="en"
       className={`${fraunces.variable} ${inter.variable} ${jetbrainsMono.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col grain-overlay scanlines">
+      {/* suppressHydrationWarning prevents false positives from browser extensions
+          (e.g. Grammarly injecting data-gr-ext-installed onto body) */}
+      <body
+        className="min-h-full flex flex-col grain-overlay"
+        suppressHydrationWarning
+      >
+        <ClientParticles />
         {children}
       </body>
     </html>

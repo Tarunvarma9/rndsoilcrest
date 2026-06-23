@@ -1,3 +1,9 @@
+export type FormatImage = {
+  src: string;
+  label: string;
+  brand?: string;
+};
+
 export type Format = {
   id: number;
   name: string;
@@ -8,6 +14,7 @@ export type Format = {
   rdSteps: string[];
   timeline: string;
   estimatedCost: string;
+  referenceImages?: FormatImage[];
 };
 
 export const FORMATS: Format[] = [
@@ -21,6 +28,10 @@ export const FORMATS: Format[] = [
     rdSteps: ["Ongoing quality & stability monitoring", "Packaging refresh as needed"],
     timeline: "Live",
     estimatedCost: "—",
+    referenceImages: [
+      { src: "/formats/01-powder/ref-01.jpg",  label: "Tube canister + 5g stick packs (100g)", brand: "HolySeed" },
+      { src: "/formats/01-powder/ref-02.png",  label: "Stand-up pouches — Açaí Berry & Pink Pitaya", brand: "Blendu" },
+    ],
   },
   {
     id: 2,
@@ -38,6 +49,9 @@ export const FORMATS: Format[] = [
     ],
     timeline: "0–3 months",
     estimatedCost: "₹1–2L",
+    referenceImages: [
+      { src: "/formats/02-sachets/ref-01.webp", label: "Superfood powder stick packs — gradient film", brand: "Juice Plus+" },
+    ],
   },
   {
     id: 3,
@@ -55,6 +69,9 @@ export const FORMATS: Format[] = [
     ],
     timeline: "0–3 months",
     estimatedCost: "₹1–2L",
+    referenceImages: [
+      { src: "/formats/03-wellness-spice/ref-01.webp", label: "Illustrated botanical product boxes — warm palette", brand: "Market reference" },
+    ],
   },
   {
     id: 4,
@@ -72,6 +89,9 @@ export const FORMATS: Format[] = [
     ],
     timeline: "0–3 months",
     estimatedCost: "₹1–2L",
+    referenceImages: [
+      { src: "/formats/04-functional-seasoning/ref-01.jpg", label: "Illustrated natural ingredient packaging", brand: "Market reference" },
+    ],
   },
   {
     id: 5,
@@ -89,6 +109,9 @@ export const FORMATS: Format[] = [
     ],
     timeline: "3–6 months",
     estimatedCost: "₹2–5L",
+    referenceImages: [
+      { src: "/formats/05-nutrition-shots/ref-01.jpg", label: "Premium Ayurvedic bottles — copper & silver, botanical illustrated labels", brand: "Market reference" },
+    ],
   },
   {
     id: 6,
@@ -107,6 +130,9 @@ export const FORMATS: Format[] = [
     ],
     timeline: "6–9 months",
     estimatedCost: "₹7–18L",
+    referenceImages: [
+      { src: "/formats/06-tablets/ref-01.svg", label: "Blister pack concept — 90 count, 4–6 tablets per serving", brand: "Concept art" },
+    ],
   },
   {
     id: 7,
@@ -126,6 +152,9 @@ export const FORMATS: Format[] = [
     ],
     timeline: "Demand-gated",
     estimatedCost: "₹10–18L (MOQ-driven)",
+    referenceImages: [
+      { src: "/formats/07-gummies/ref-01.jpg", label: "Health-function gummies — vivid label range, dark containers", brand: "Gummy Glow" },
+    ],
   },
   {
     id: 8,
@@ -141,5 +170,8 @@ export const FORMATS: Format[] = [
     ],
     timeline: "Indefinite",
     estimatedCost: "TBD",
+    referenceImages: [
+      { src: "/formats/08-cubes/ref-01.svg", label: "Dissolvable cube concept — effervescent format, shelved pending binder", brand: "Concept art" },
+    ],
   },
 ];
