@@ -123,8 +123,16 @@ const QUICK_PROMPTS = [
 ];
 
 // ── Main component ────────────────────────────────────────────────────────────
-export function AgentConsole({ onClose }: { onClose: () => void }) {
-  const [activeAgent, setActiveAgent] = useState<AgentId>("GT_ROUTING");
+export function AgentConsole({
+  onClose,
+  initialAgent = "GT_ROUTING",
+}: {
+  onClose?: () => void;
+  initialAgent?: string;
+}) {
+  const [activeAgent, setActiveAgent] = useState<AgentId>(
+    (initialAgent as AgentId) ?? "GT_ROUTING"
+  );
   const [histories, setHistories] = useState<Record<AgentId, Message[]>>(
     Object.fromEntries(AGENTS.map((a) => [a.id, []])) as unknown as Record<AgentId, Message[]>
   );
@@ -140,8 +148,14 @@ export function AgentConsole({ onClose }: { onClose: () => void }) {
   const activeColor = activeMeta.color;
   const isRouterMode = !!activeMeta.isRouter;
 
+  // Sync when platform changes the selected agent via prop
   useEffect(() => {
-    const onKey = (e: KeyboardEvent) => { if (e.key === "Escape") onClose(); };
+    const found = AGENTS.find((a) => a.id === initialAgent);
+    if (found) setActiveAgent(found.id as AgentId);
+  }, [initialAgent]);
+
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => { if (e.key === "Escape") onClose?.(); };
     document.addEventListener("keydown", onKey);
     return () => document.removeEventListener("keydown", onKey);
   }, [onClose]);
@@ -209,25 +223,26 @@ export function AgentConsole({ onClose }: { onClose: () => void }) {
   const isThinking =
     isStreaming && messages.length > 0 && messages[messages.length - 1].role === "user";
 
-  return (
+  const panel = (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center p-4"
-      style={{ background: "rgba(6,4,2,0.95)", backdropFilter: "blur(16px)" }}
-      onClick={onClose}
-    >
-      <div
-        className="w-full max-w-2xl flex flex-col rounded-lg"
-        style={{
-          height: "min(92vh, 720px)",
-          background: "rgba(9,7,4,0.99)",
+      className="w-full flex flex-col"
+      style={{
+        height: onClose ? "min(92vh, 720px)" : "min(82vh, 680px)",
+        background: "rgba(9,7,4,0.99)",
+        ...(onClose && {
+          maxWidth: "42rem",
+          borderRadius: "0.5rem",
           border: "1px solid rgba(34,211,238,0.2)",
           boxShadow: "0 0 0 1px rgba(34,211,238,0.03), 0 0 100px rgba(34,211,238,0.05), 0 50px 100px rgba(0,0,0,0.7)",
-        }}
-        onClick={(e) => e.stopPropagation()}
-        role="dialog"
-        aria-modal="true"
-        aria-label="GT-Routing R&D Console"
-      >
+        }),
+      }}
+      {...(onClose && {
+        onClick: (e: React.MouseEvent) => e.stopPropagation(),
+        role: "dialog",
+        "aria-modal": true,
+        "aria-label": "GT-Routing R&D Console",
+      })}
+    >
 
         {/* ── Header ──────────────────────────────────────────────────────────── */}
         <div
@@ -683,6 +698,17 @@ export function AgentConsole({ onClose }: { onClose: () => void }) {
           </p>
         </div>
       </div>
+  );
+
+  if (!onClose) return panel;
+
+  return (
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center p-4"
+      style={{ background: "rgba(6,4,2,0.95)", backdropFilter: "blur(16px)" }}
+      onClick={onClose}
+    >
+      {panel}
     </div>
   );
 }
