@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { AgentConsole } from "./agent-console";
 import { FigModal } from "./fig-modal";
 import { FORMATS, type Format, type FormatImage } from "@/lib/formats";
@@ -8,13 +8,21 @@ import { FORMATS, type Format, type FormatImage } from "@/lib/formats";
 function CardThumbnail({ images }: { images: FormatImage[] }) {
   const [loaded, setLoaded] = useState(false);
   const [failed, setFailed] = useState(false);
+  const imgRef = useRef<HTMLImageElement>(null);
+
+  // CDN-cached images fire onLoad before React registers the handler — check on mount
+  useEffect(() => {
+    const img = imgRef.current;
+    if (!img) return;
+    if (img.complete && img.naturalWidth > 0) setLoaded(true);
+    else if (img.complete && img.naturalWidth === 0) setFailed(true);
+  }, []);
 
   if (images.length === 0) return null;
 
   return (
     <div className="relative w-full h-28 overflow-hidden">
-      {/* Placeholder shown until image loads or on failure */}
-      {!loaded && (
+      {!loaded && !failed && (
         <div
           className="absolute inset-0 flex items-center justify-center"
           style={{ background: "rgba(34, 211, 238, 0.04)" }}
@@ -23,16 +31,17 @@ function CardThumbnail({ images }: { images: FormatImage[] }) {
             className="text-xs tracking-widest uppercase opacity-20"
             style={{ fontFamily: "var(--font-jetbrains-mono)", color: "var(--cyan)" }}
           >
-            {failed ? "place image here →" : "···"}
+            ···
           </span>
         </div>
       )}
 
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
+        ref={imgRef}
         src={images[0].src}
         alt=""
-        className="absolute inset-0 w-full h-full object-cover transition-opacity duration-700"
+        className="absolute inset-0 w-full h-full object-cover transition-opacity duration-500"
         style={{ opacity: loaded ? 0.92 : 0, color: "transparent" }}
         onLoad={() => setLoaded(true)}
         onError={() => setFailed(true)}
