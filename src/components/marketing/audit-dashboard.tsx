@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
-import { parseUA, maskIP, timeAgo, type LogEntry } from "@/lib/access-log";
+import { parseUA, maskIP, timeAgo, type LogEntry } from "@/lib/access-log-types";
 
 // ── Stat card ─────────────────────────────────────────────────────────────────
 function StatCard({ label, value, sub }: { label: string; value: string | number; sub?: string }) {
