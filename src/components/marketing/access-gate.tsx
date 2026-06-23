@@ -115,11 +115,10 @@ export function AccessGate() {
           <form onSubmit={handleSubmit} className="w-full flex flex-col gap-3">
             <input
               type="password"
-              inputMode="numeric"
-              maxLength={6}
+              maxLength={8}
               placeholder="••••••"
               value={code}
-              onChange={(e) => setCode(e.target.value.replace(/\D/g, ""))}
+              onChange={(e) => setCode(e.target.value.toUpperCase())}
               className="w-full text-center text-2xl tracking-[0.5em] py-3 px-4 outline-none placeholder:opacity-25"
               style={{
                 background: "rgba(34,211,238,0.05)",
@@ -128,6 +127,9 @@ export function AccessGate() {
                 fontFamily: "var(--font-jetbrains-mono)",
               }}
               autoFocus
+              autoCapitalize="none"
+              autoCorrect="off"
+              autoComplete="off"
             />
 
             {error && (
@@ -141,7 +143,7 @@ export function AccessGate() {
 
             <button
               type="submit"
-              disabled={code.length !== 6 || loading}
+              disabled={code.length < 4 || loading}
               className="w-full py-3 text-xs tracking-[0.25em] uppercase transition-all disabled:opacity-30"
               style={{
                 background: "rgba(34,211,238,0.08)",
