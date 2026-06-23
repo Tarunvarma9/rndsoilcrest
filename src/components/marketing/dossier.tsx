@@ -67,26 +67,46 @@ export function Dossier() {
       {/* Hero */}
       <header className="pt-16 pb-10 px-6 text-center">
         <p
-          className="text-xs tracking-[0.25em] uppercase mb-3"
-          style={{
-            fontFamily: "var(--font-jetbrains-mono)",
-            color: "var(--cyan)",
-          }}
+          className="text-xs tracking-[0.25em] uppercase mb-4 opacity-50"
+          style={{ fontFamily: "var(--font-jetbrains-mono)", color: "var(--cyan)" }}
         >
-          Soil Crest Naturals — Confidential R&D Dossier
+          Soil Crest Naturals · Confidential R&D Dossier
         </p>
+
+        {/* Fight Club pre-title */}
+        <p
+          className="text-xs italic mb-3 opacity-55 max-w-sm mx-auto"
+          style={{ fontFamily: "var(--font-fraunces)", color: "var(--bone-muted)" }}
+        >
+          &ldquo;You are not your supplement label.&rdquo;
+        </p>
+
         <h1
           className="text-4xl md:text-6xl font-medium gradient-text"
           style={{ fontFamily: "var(--font-fraunces)" }}
         >
           Daily Health Mix
         </h1>
+
         <p
-          className="mt-3 text-sm max-w-md mx-auto"
+          className="mt-4 text-sm max-w-lg mx-auto leading-relaxed"
           style={{ color: "var(--bone-muted)", fontFamily: "var(--font-inter)" }}
         >
-          Eight product formats. One mother formula. Sequenced by R&D readiness.
+          Stop buying what you don&apos;t need. Eight formats from one whole-food formula —
+          formulated with zero filler, zero apology, and zero compromise.
         </p>
+
+        {/* Divider */}
+        <div className="flex items-center justify-center gap-4 mt-8">
+          <div className="h-px w-16 bg-linear-to-r from-transparent to-cyan-500 opacity-30"/>
+          <span
+            className="text-xs tracking-[0.3em] uppercase opacity-30"
+            style={{ fontFamily: "var(--font-jetbrains-mono)", color: "var(--cyan)" }}
+          >
+            The Pipeline
+          </span>
+          <div className="h-px w-16 bg-linear-to-l from-transparent to-cyan-500 opacity-30"/>
+        </div>
       </header>
 
       {/* Mother formula */}
@@ -219,6 +239,82 @@ export function Dossier() {
             </div>
           </button>
         </div>
+      </section>
+
+      {/* ── Shoutout ──────────────────────────────────────────────────────────── */}
+      <section className="px-6 pb-24 max-w-4xl mx-auto w-full">
+        <div
+          className="relative overflow-hidden rounded px-8 py-10 flex flex-col sm:flex-row items-center gap-8"
+          style={{
+            background: "rgba(255,255,255,0.02)",
+            border: "1px solid rgba(34,211,238,0.12)",
+          }}
+        >
+          {/* Ambient glow */}
+          <div
+            className="absolute inset-0 pointer-events-none"
+            style={{
+              background: "radial-gradient(ellipse at 20% 50%, rgba(34,211,238,0.04) 0%, transparent 60%)",
+            }}
+          />
+
+          {/* Logo */}
+          <div className="shrink-0 relative">
+            <div
+              className="rounded overflow-hidden"
+              style={{
+                padding: "12px 20px",
+                background: "rgba(255,255,255,0.04)",
+                border: "1px solid rgba(255,255,255,0.08)",
+              }}
+            >
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src="/shoutout.jpg"
+                alt="Inspired by"
+                style={{ height: 52, objectFit: "contain", display: "block", opacity: 0.9 }}
+              />
+            </div>
+          </div>
+
+          {/* Divider */}
+          <div
+            className="hidden sm:block self-stretch w-px shrink-0"
+            style={{ background: "rgba(34,211,238,0.12)" }}
+          />
+
+          {/* Copy */}
+          <div className="flex-1 min-w-0 text-center sm:text-left">
+            <p
+              className="text-xs tracking-[0.25em] uppercase mb-3"
+              style={{ fontFamily: "var(--font-jetbrains-mono)", color: "var(--cyan)", opacity: 0.5 }}
+            >
+              Standing on the shoulders of
+            </p>
+            <blockquote
+              className="text-xl sm:text-2xl font-medium leading-snug mb-4"
+              style={{ fontFamily: "var(--font-fraunces)", color: "var(--bone)", fontStyle: "italic" }}
+            >
+              &ldquo;They proved India would pay for quality.
+              <br />
+              <span style={{ color: "var(--cyan)" }}>Now we build what India actually needs.</span>&rdquo;
+            </blockquote>
+            <p
+              className="text-xs opacity-40"
+              style={{ fontFamily: "var(--font-jetbrains-mono)", color: "var(--bone-muted)", letterSpacing: "0.15em" }}
+            >
+              HK VITALS · THE BENCHMARK &nbsp;·&nbsp; SOIL CREST NATURALS · THE EVOLUTION
+            </p>
+          </div>
+        </div>
+
+        {/* Fight Club closer */}
+        <p
+          className="text-center mt-8 text-xs italic opacity-25"
+          style={{ fontFamily: "var(--font-fraunces)", color: "var(--bone-muted)" }}
+        >
+          &ldquo;Without sacrifice, without real ingredients — you have nothing.&rdquo;
+        </p>
       </section>
 
       {/* Format modal */}
