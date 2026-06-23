@@ -12,8 +12,8 @@ export default async function RdPage() {
   const jar    = await cookies();
   const access = jar.get("sc_access")?.value;
 
-  // Only main access (482917 or legacy "1") can view R&D plan
-  if (access !== "main" && access !== "1") redirect("/");
+  // Main and overview access can view the R&D plan
+  if (access !== "main" && access !== "1" && access !== "overview") redirect("/");
 
   return <RdPlan />;
 }
