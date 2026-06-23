@@ -29,22 +29,22 @@ export async function sendLoveInvite(): Promise<boolean> {
   if (!phone || !apiKey) return false;
 
   const message = [
-    `🌿`,
-    ``,
     `Dear H.,`,
     ``,
+    `I hope this message finds you well.`,
+    ``,
     `Your personal access to the dossier has been`,
-    `prepared with the greatest care and respect.`,
+    `thoughtfully prepared and is ready for you.`,
     ``,
-    `🔑 *Your Access Code*`,
-    `*${code}*`,
+    `*Your Access Code: ${code}*`,
     ``,
-    `Enter this at the access gate whenever you wish`,
-    `to visit the space prepared exclusively for you.`,
+    `You may use this code at the access gate`,
+    `at any time that is convenient for you.`,
     ``,
-    `_Please keep this private — it is yours alone._`,
+    `This has been shared with you alone,`,
+    `and I would kindly request that you keep it private.`,
     ``,
-    `With sincere warmth and gratitude 🤍`,
+    `With sincere warmth and the deepest respect.`,
   ].join("\n");
 
   return callmebot(phone, apiKey, message);
