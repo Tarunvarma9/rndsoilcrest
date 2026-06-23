@@ -160,9 +160,9 @@ function HeroImage() {
 
 // ── Main page ─────────────────────────────────────────────────────────────────
 export function LovePage() {
-  function handleSignOut() {
-    document.cookie = "sc_access=; path=/; max-age=0";
-    window.location.reload();
+  async function handleSignOut() {
+    await fetch("/api/logout", { method: "POST" });
+    window.location.href = "/";
   }
 
   return (

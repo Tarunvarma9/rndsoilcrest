@@ -67,12 +67,33 @@ function CardThumbnail({ images }: { images: FormatImage[] }) {
   );
 }
 
+async function logout() {
+  await fetch("/api/logout", { method: "POST" });
+  window.location.href = "/";
+}
+
 export function Dossier() {
   const [activeFormat, setActiveFormat] = useState<Format | null>(null);
   const [agentOpen, setAgentOpen] = useState(false);
 
   return (
     <div className="min-h-screen flex flex-col">
+      {/* Logout — fixed top-right */}
+      <button
+        onClick={logout}
+        aria-label="Log out"
+        className="fixed top-4 right-4 z-50 text-xs px-3 py-1.5 rounded transition-all opacity-25 hover:opacity-70"
+        style={{
+          fontFamily: "var(--font-jetbrains-mono)",
+          color: "var(--cyan)",
+          background: "rgba(34,211,238,0.05)",
+          border: "1px solid rgba(34,211,238,0.15)",
+          letterSpacing: "0.15em",
+        }}
+      >
+        ⎋ Exit
+      </button>
+
       {/* Hero */}
       <header className="pt-16 pb-10 px-6 text-center">
         <p

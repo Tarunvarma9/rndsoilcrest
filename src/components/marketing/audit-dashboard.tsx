@@ -195,9 +195,9 @@ export function AuditDashboard() {
     setClearing(false);
   }
 
-  function handleSignOut() {
-    document.cookie = "sc_audit=; path=/; max-age=0";
-    window.location.reload();
+  async function handleSignOut() {
+    await fetch("/api/logout?scope=audit", { method: "POST" });
+    window.location.href = "/audit";
   }
 
   return (
