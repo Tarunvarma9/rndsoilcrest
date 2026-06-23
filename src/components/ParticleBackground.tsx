@@ -24,10 +24,10 @@ function StarField({ count, color, size, opacity, speed }: {
     return arr
   }, [count])
 
-  useFrame((state) => {
+  useFrame((_, delta) => {
     if (ref.current) {
-      ref.current.rotation.y = state.clock.elapsedTime * speed
-      ref.current.rotation.x = state.clock.elapsedTime * speed * 0.6
+      ref.current.rotation.y += delta * speed
+      ref.current.rotation.x += delta * speed * 0.6
     }
   })
 
