@@ -20,15 +20,8 @@ export async function sendWhatsApp(message: string): Promise<boolean> {
   return callmebot(phone, apiKey, message);
 }
 
-// Love invite channel — separate recipient, separate API key
-export async function sendLoveInvite(): Promise<boolean> {
-  const phone  = process.env.LOVE_NOTIFY_PHONE;   // +917981419535
-  const apiKey = process.env.LOVE_CALLMEBOT_KEY;  // API key for that number
-  const code   = process.env.LOVE_CODE ?? "——";
-
-  if (!phone || !apiKey) return false;
-
-  const message = [
+function buildLoveMessage(code: string): string {
+  return [
     `Dear H.,`,
     ``,
     `I hope this message finds you well.`,
@@ -46,6 +39,23 @@ export async function sendLoveInvite(): Promise<boolean> {
     ``,
     `With sincere warmth and the deepest respect.`,
   ].join("\n");
+}
 
-  return callmebot(phone, apiKey, message);
+// Love invite channel — separate recipient, separate API key
+export async function sendLoveInvite(): Promise<boolean> {
+  const phone  = process.env.LOVE_NOTIFY_PHONE;   // +917981419535
+  const apiKey = process.env.LOVE_CALLMEBOT_KEY;  // API key for that number
+  const code   = process.env.LOVE_CODE ?? "——";
+
+  if (!phone || !apiKey) return false;
+  return callmebot(phone, apiKey, buildLoveMessage(code));
+}
+
+// Test — sends the love invite message to the owner's number for preview
+export async function sendLoveInviteTest(): Promise<boolean> {
+  const phone  = process.env.ALERT_PHONE;
+  const apiKey = process.env.CALLMEBOT_API_KEY;
+  const code   = process.env.LOVE_CODE ?? "——";
+  if (!phone || !apiKey) return false;
+  return callmebot(phone, apiKey, buildLoveMessage(code));
 }
