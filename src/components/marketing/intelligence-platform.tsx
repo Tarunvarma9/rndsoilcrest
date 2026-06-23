@@ -340,6 +340,20 @@ export function IntelligencePlatform() {
 
         <div className="flex items-center gap-4">
           <LiveClock />
+          <a
+            href="/rd"
+            className="text-xs px-3 py-1.5 rounded transition-all opacity-40 hover:opacity-90 hidden sm:block"
+            style={{
+              fontFamily: "var(--font-jetbrains-mono)",
+              background: "rgba(139,92,246,0.08)",
+              border: "1px solid rgba(139,92,246,0.25)",
+              color: "#A78BFA",
+              letterSpacing: "0.12em",
+              textDecoration: "none",
+            }}
+          >
+            R&D Plan →
+          </a>
           <button
             onClick={logout}
             className="text-xs px-3 py-1.5 rounded transition-all opacity-30 hover:opacity-80"
