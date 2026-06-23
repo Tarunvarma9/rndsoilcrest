@@ -92,8 +92,8 @@ export function Dossier() {
           className="mt-4 text-sm max-w-lg mx-auto leading-relaxed"
           style={{ color: "var(--bone-muted)", fontFamily: "var(--font-inter)" }}
         >
-          Stop buying what you don&apos;t need. Eight formats from one whole-food formula —
-          formulated with zero filler, zero apology, and zero compromise.
+          Most brands sell you the lifestyle. We built the formula.
+          Six whole foods. Eight formats. One reason — because you&apos;re done with labels that lie.
         </p>
 
         {/* Divider */}
@@ -103,7 +103,7 @@ export function Dossier() {
             className="text-xs tracking-[0.3em] uppercase opacity-30"
             style={{ fontFamily: "var(--font-jetbrains-mono)", color: "var(--cyan)" }}
           >
-            The Pipeline
+            Format Architecture
           </span>
           <div className="h-px w-16 bg-linear-to-l from-transparent to-cyan-500 opacity-30"/>
         </div>
@@ -115,7 +115,7 @@ export function Dossier() {
           className="text-xs tracking-[0.2em] uppercase mb-4"
           style={{ fontFamily: "var(--font-jetbrains-mono)", color: "var(--bone-muted)" }}
         >
-          Mother Formula — Six Ingredients
+          The Origin · Six Whole Foods
         </p>
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-3">
           {["Amla", "Beetroot", "Carrot", "Moringa", "Ginger", "Pomegranate"].map(
