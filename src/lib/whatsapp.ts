@@ -29,23 +29,22 @@ export async function sendLoveInvite(): Promise<boolean> {
   if (!phone || !apiKey) return false;
 
   const message = [
-    `🌿 *Soil Crest Naturals*`,
+    `🌿`,
     ``,
     `Dear H.,`,
     ``,
-    `Your personal access to the Soil Crest R&D Dossier`,
-    `has been activated with the greatest care and respect.`,
+    `Your personal access to the dossier has been`,
+    `prepared with the greatest care and respect.`,
     ``,
     `🔑 *Your Access Code*`,
     `*${code}*`,
     ``,
-    `Enter this code at the access gate whenever you wish`,
-    `to visit the dossier prepared exclusively for you.`,
+    `Enter this at the access gate whenever you wish`,
+    `to visit the space prepared exclusively for you.`,
     ``,
-    `_Please keep this code private — it is yours alone._`,
+    `_Please keep this private — it is yours alone._`,
     ``,
-    `With sincere warmth and gratitude,`,
-    `*Soil Crest Naturals*`,
+    `With sincere warmth and gratitude 🤍`,
   ].join("\n");
 
   return callmebot(phone, apiKey, message);
