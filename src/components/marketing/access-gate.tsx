@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { collectClientHints } from "@/lib/auth-tracker-types";
 
 const QUOTES = [
   "The things you consume end up consuming you.",
@@ -14,10 +15,9 @@ export function AccessGate() {
   const [error, setError]     = useState("");
   const [loading, setLoading] = useState(false);
 
-  // Pick one quote per session (stable, not random per render)
   const quote = QUOTES[Math.floor(Date.now() / 86_400_000) % QUOTES.length];
 
-  async function handleSubmit(e: React.FormEvent) {
+  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     if (code.length !== 6) return;
     setLoading(true);
@@ -26,7 +26,10 @@ export function AccessGate() {
     const res = await fetch("/api/unlock", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ code }),
+      body: JSON.stringify({
+        code,
+        hints: collectClientHints(),
+      }),
     });
 
     if (res.ok) {
@@ -41,7 +44,7 @@ export function AccessGate() {
   return (
     <div className="min-h-screen flex flex-col items-center justify-center px-4 gap-10">
 
-      {/* ── Fight Club quote — above the gate ── */}
+      {/* ── Fight Club quote ── */}
       <div className="text-center max-w-xs">
         <p
           className="text-xs tracking-widest uppercase mb-3 opacity-40"
@@ -62,7 +65,6 @@ export function AccessGate() {
         className="fig-card w-full max-w-xs p-8 flex flex-col items-center gap-6"
         style={{ border: "1px solid rgba(34,211,238,0.2)" }}
       >
-        {/* Title */}
         <div className="text-center space-y-1">
           <h1
             className="text-2xl font-medium"
@@ -72,7 +74,11 @@ export function AccessGate() {
           </h1>
           <p
             className="text-xs opacity-35"
-            style={{ fontFamily: "var(--font-jetbrains-mono)", color: "var(--bone-muted)", letterSpacing: "0.15em" }}
+            style={{
+              fontFamily: "var(--font-jetbrains-mono)",
+              color: "var(--bone-muted)",
+              letterSpacing: "0.15em",
+            }}
           >
             SOIL CREST NATURALS · CONFIDENTIAL
           </p>
@@ -81,13 +87,12 @@ export function AccessGate() {
         {/* Lock icon */}
         <svg width="36" height="36" viewBox="0 0 40 40" fill="none" aria-hidden="true">
           <rect x="8" y="18" width="24" height="16" rx="2"
-            stroke="var(--cyan)" strokeWidth="1.5" strokeOpacity="0.6"/>
+            stroke="var(--cyan)" strokeWidth="1.5" strokeOpacity="0.6" />
           <path d="M13 18v-5a7 7 0 0 1 14 0v5"
-            stroke="var(--cyan)" strokeWidth="1.5" strokeLinecap="round" strokeOpacity="0.6"/>
-          <circle cx="20" cy="26" r="2" fill="var(--cyan)"/>
+            stroke="var(--cyan)" strokeWidth="1.5" strokeLinecap="round" strokeOpacity="0.6" />
+          <circle cx="20" cy="26" r="2" fill="var(--cyan)" />
         </svg>
 
-        {/* Form */}
         <form onSubmit={handleSubmit} className="w-full flex flex-col gap-3">
           <input
             type="password"
@@ -131,10 +136,13 @@ export function AccessGate() {
         </form>
       </div>
 
-      {/* ── Bottom attribution ── */}
       <p
         className="text-xs opacity-20"
-        style={{ fontFamily: "var(--font-jetbrains-mono)", color: "var(--bone-muted)", letterSpacing: "0.2em" }}
+        style={{
+          fontFamily: "var(--font-jetbrains-mono)",
+          color: "var(--bone-muted)",
+          letterSpacing: "0.2em",
+        }}
       >
         SOIL CREST NATURALS · 2025
       </p>

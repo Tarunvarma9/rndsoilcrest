@@ -1,6 +1,6 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
-import { getLogs, clearLogs } from "@/lib/access-log";
+import { tracker } from "@/lib/auth-tracker";
 
 export async function GET() {
   const jar = await cookies();
@@ -8,16 +8,17 @@ export async function GET() {
     return NextResponse.json({ error: "Forbidden" }, { status: 403 });
   }
 
-  const logs = await getLogs(200);
-  return NextResponse.json({ logs });
+  const events = await tracker.getLogs(200);
+  const stats  = tracker.computeStats(events);
+  return NextResponse.json({ events, stats });
 }
 
-export async function DELETE(req: NextRequest) {
+export async function DELETE() {
   const jar = await cookies();
   if (jar.get("sc_audit")?.value !== "1") {
     return NextResponse.json({ error: "Forbidden" }, { status: 403 });
   }
 
-  await clearLogs();
+  await tracker.clearLogs();
   return NextResponse.json({ ok: true });
 }

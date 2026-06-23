@@ -1,14 +1,32 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
-import { parseUA, maskIP, timeAgo, type LogEntry } from "@/lib/access-log-types";
+import {
+  type AccessEvent,
+  type AccessStats,
+  countryFlag,
+  deviceIcon,
+  maskIP,
+  timeAgo,
+} from "@/lib/auth-tracker-types";
 
 // ── Stat card ─────────────────────────────────────────────────────────────────
-function StatCard({ label, value, sub }: { label: string; value: string | number; sub?: string }) {
+function StatCard({
+  label,
+  value,
+  sub,
+}: {
+  label: string;
+  value: string | number;
+  sub?: string;
+}) {
   return (
     <div
       className="flex flex-col gap-1 p-5 rounded"
-      style={{ background: "rgba(34,211,238,0.04)", border: "1px solid rgba(34,211,238,0.12)" }}
+      style={{
+        background: "rgba(34,211,238,0.04)",
+        border: "1px solid rgba(34,211,238,0.12)",
+      }}
     >
       <span
         className="text-xs tracking-widest uppercase opacity-50"
@@ -34,8 +52,8 @@ function StatCard({ label, value, sub }: { label: string; value: string | number
   );
 }
 
-// ── Mini bar chart — last 7 days ───────────────────────────────────────────
-function ActivityBars({ logs }: { logs: LogEntry[] }) {
+// ── Mini bar chart — last 7 days ──────────────────────────────────────────────
+function ActivityBars({ events }: { events: AccessEvent[] }) {
   const days = Array.from({ length: 7 }, (_, i) => {
     const d = new Date();
     d.setDate(d.getDate() - (6 - i));
@@ -43,16 +61,13 @@ function ActivityBars({ logs }: { logs: LogEntry[] }) {
     return d.getTime();
   });
 
-  const counts = days.map((start) => {
-    const end = start + 86_400_000;
-    return logs.filter((l) => l.ts >= start && l.ts < end).length;
-  });
-
+  const counts = days.map((start) =>
+    events.filter((e) => e.ts >= start && e.ts < start + 86_400_000).length
+  );
   const max = Math.max(...counts, 1);
-  const labels = days.map((ts) => {
-    const d = new Date(ts);
-    return d.toLocaleDateString("en-IN", { weekday: "short" }).slice(0, 2);
-  });
+  const labels = days.map((ts) =>
+    new Date(ts).toLocaleDateString("en-IN", { weekday: "short" }).slice(0, 2)
+  );
 
   return (
     <div className="flex items-end gap-2 h-16">
@@ -62,12 +77,17 @@ function ActivityBars({ logs }: { logs: LogEntry[] }) {
             className="w-full rounded-sm transition-all"
             style={{
               height: `${Math.max(4, (count / max) * 48)}px`,
-              background: count > 0 ? "rgba(34,211,238,0.5)" : "rgba(34,211,238,0.08)",
+              background:
+                count > 0 ? "rgba(34,211,238,0.55)" : "rgba(34,211,238,0.08)",
             }}
           />
           <span
             className="text-xs opacity-30"
-            style={{ fontFamily: "var(--font-jetbrains-mono)", color: "var(--cyan)", fontSize: "9px" }}
+            style={{
+              fontFamily: "var(--font-jetbrains-mono)",
+              color: "var(--cyan)",
+              fontSize: "9px",
+            }}
           >
             {labels[i]}
           </span>
@@ -77,14 +97,63 @@ function ActivityBars({ logs }: { logs: LogEntry[] }) {
   );
 }
 
+// ── Breakdown pill row ────────────────────────────────────────────────────────
+function BreakdownRow({
+  label,
+  data,
+}: {
+  label: string;
+  data: Record<string, number>;
+}) {
+  const total = Object.values(data).reduce((a, b) => a + b, 0) || 1;
+  const sorted = Object.entries(data).sort((a, b) => b[1] - a[1]);
+
+  return (
+    <div>
+      <p
+        className="text-xs tracking-widest uppercase opacity-40 mb-2"
+        style={{ fontFamily: "var(--font-jetbrains-mono)", color: "var(--cyan)" }}
+      >
+        {label}
+      </p>
+      <div className="flex flex-wrap gap-2">
+        {sorted.map(([name, count]) => (
+          <span
+            key={name}
+            className="text-xs px-2.5 py-1 rounded-full"
+            style={{
+              background: "rgba(34,211,238,0.08)",
+              border: "1px solid rgba(34,211,238,0.15)",
+              color: "var(--bone)",
+              fontFamily: "var(--font-jetbrains-mono)",
+            }}
+          >
+            {name}{" "}
+            <span style={{ color: "var(--cyan)", opacity: 0.7 }}>
+              {Math.round((count / total) * 100)}%
+            </span>
+          </span>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 // ── CSV export ────────────────────────────────────────────────────────────────
-function exportCSV(logs: LogEntry[]) {
-  const header = "ID,Timestamp,IP,Browser,OS,User Agent\n";
-  const rows = logs.map((l) => {
-    const { browser, os } = parseUA(l.ua);
-    const ts = new Date(l.ts).toISOString();
-    const safeUA = `"${l.ua.replace(/"/g, "'")}"`;
-    return `${l.id},${ts},${maskIP(l.ip)},${browser},${os},${safeUA}`;
+function exportCSV(events: AccessEvent[]) {
+  const header =
+    "ID,Timestamp,IP,Country,City,DeviceType,Browser,BrowserVersion,OS,OSVersion,Screen,Timezone,Locale\n";
+  const rows = events.map((e) => {
+    const d = e.device;
+    const ts = new Date(e.ts).toISOString();
+    const screen = d.screenW ? `${d.screenW}x${d.screenH}` : "";
+    return [
+      e.id, ts, maskIP(d.ip), d.country, d.city,
+      d.deviceType, d.browser, d.browserVersion, d.os, d.osVersion,
+      screen, d.timezone ?? "", d.locale,
+    ]
+      .map((v) => `"${String(v).replace(/"/g, "'")}"`)
+      .join(",");
   });
   const blob = new Blob([header + rows.join("\n")], { type: "text/csv" });
   const url = URL.createObjectURL(blob);
@@ -95,21 +164,23 @@ function exportCSV(logs: LogEntry[]) {
   URL.revokeObjectURL(url);
 }
 
-// ── Main dashboard ─────────────────────────────────────────────────────────
+// ── Main dashboard ────────────────────────────────────────────────────────────
 export function AuditDashboard() {
-  const [logs, setLogs]       = useState<LogEntry[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [clearing, setClearing] = useState(false);
-  const [lastRefresh, setLastRefresh] = useState(Date.now());
+  const [events, setEvents]       = useState<AccessEvent[]>([]);
+  const [stats, setStats]         = useState<AccessStats | null>(null);
+  const [loading, setLoading]     = useState(true);
+  const [clearing, setClearing]   = useState(false);
+  const [lastRefresh, setLast]    = useState(Date.now());
 
   const fetchLogs = useCallback(async () => {
     setLoading(true);
     const res = await fetch("/api/audit-log");
     if (res.ok) {
-      const { logs: data } = await res.json();
-      setLogs(data ?? []);
+      const data = await res.json();
+      setEvents(data.events ?? []);
+      setStats(data.stats ?? null);
     }
-    setLastRefresh(Date.now());
+    setLast(Date.now());
     setLoading(false);
   }, []);
 
@@ -119,7 +190,8 @@ export function AuditDashboard() {
     if (!confirm("Clear all access logs? This cannot be undone.")) return;
     setClearing(true);
     await fetch("/api/audit-log", { method: "DELETE" });
-    setLogs([]);
+    setEvents([]);
+    setStats(null);
     setClearing(false);
   }
 
@@ -127,12 +199,6 @@ export function AuditDashboard() {
     document.cookie = "sc_audit=; path=/; max-age=0";
     window.location.reload();
   }
-
-  // ── Computed stats ────────────────────────────────────────────────────────
-  const now = Date.now();
-  const last24h  = logs.filter((l) => now - l.ts < 86_400_000).length;
-  const uniqueIPs = new Set(logs.map((l) => l.ip)).size;
-  const lastAccess = logs.length > 0 ? timeAgo(logs[0].ts) : "—";
 
   return (
     <div
@@ -142,7 +208,10 @@ export function AuditDashboard() {
       {/* ── Top nav ── */}
       <header
         className="sticky top-0 z-10 flex items-center justify-between px-6 py-4 backdrop-blur-sm"
-        style={{ borderBottom: "1px solid rgba(34,211,238,0.1)", background: "rgba(2,0,20,0.85)" }}
+        style={{
+          borderBottom: "1px solid rgba(34,211,238,0.1)",
+          background: "rgba(2,0,20,0.85)",
+        }}
       >
         <div className="flex items-center gap-3">
           <a
@@ -183,7 +252,7 @@ export function AuditDashboard() {
           </button>
           <button
             onClick={handleSignOut}
-            className="text-xs px-3 py-1.5 rounded transition-all opacity-50 hover:opacity-90"
+            className="text-xs px-3 py-1.5 rounded opacity-50 hover:opacity-90 transition-all"
             style={{
               background: "rgba(217,70,239,0.06)",
               border: "1px solid rgba(217,70,239,0.18)",
@@ -196,9 +265,9 @@ export function AuditDashboard() {
         </div>
       </header>
 
-      <main className="flex-1 px-4 sm:px-8 py-8 max-w-5xl mx-auto w-full space-y-8">
+      <main className="flex-1 px-4 sm:px-8 py-8 max-w-6xl mx-auto w-full space-y-8">
 
-        {/* ── Page title ── */}
+        {/* ── Title ── */}
         <div>
           <h1
             className="text-3xl sm:text-4xl font-medium"
@@ -210,41 +279,80 @@ export function AuditDashboard() {
             className="text-xs opacity-40 mt-1"
             style={{ fontFamily: "var(--font-jetbrains-mono)", color: "var(--bone-muted)" }}
           >
-            Every successful dossier unlock is recorded here.
+            Device fingerprint captured on every successful unlock.
           </p>
         </div>
 
         {/* ── Stats row ── */}
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-          <StatCard label="Total Unlocks" value={logs.length} />
-          <StatCard label="Last 24h" value={last24h} />
-          <StatCard label="Unique IPs" value={uniqueIPs} />
-          <StatCard label="Last Access" value={lastAccess} />
+          <StatCard label="Total Unlocks" value={stats?.total ?? 0} />
+          <StatCard label="Last 24h"      value={stats?.last24h ?? 0} />
+          <StatCard label="Unique IPs"    value={stats?.uniqueIPs ?? 0} />
+          <StatCard
+            label="Countries"
+            value={stats?.uniqueCountries ?? 0}
+            sub={
+              stats && events.length > 0
+                ? events
+                    .map((e) => countryFlag(e.device.country))
+                    .filter(Boolean)
+                    .slice(0, 6)
+                    .join(" ")
+                : undefined
+            }
+          />
         </div>
 
-        {/* ── Activity chart ── */}
-        <div
-          className="p-5 rounded"
-          style={{ background: "rgba(34,211,238,0.03)", border: "1px solid rgba(34,211,238,0.1)" }}
-        >
-          <p
-            className="text-xs tracking-widest uppercase opacity-40 mb-4"
-            style={{ fontFamily: "var(--font-jetbrains-mono)", color: "var(--cyan)" }}
+        {/* ── Activity chart + breakdowns ── */}
+        <div className="grid sm:grid-cols-2 gap-4">
+          <div
+            className="p-5 rounded"
+            style={{
+              background: "rgba(34,211,238,0.03)",
+              border: "1px solid rgba(34,211,238,0.1)",
+            }}
           >
-            Last 7 Days
-          </p>
-          <ActivityBars logs={logs} />
+            <p
+              className="text-xs tracking-widest uppercase opacity-40 mb-4"
+              style={{ fontFamily: "var(--font-jetbrains-mono)", color: "var(--cyan)" }}
+            >
+              Last 7 Days
+            </p>
+            <ActivityBars events={events} />
+          </div>
+
+          <div
+            className="p-5 rounded space-y-4"
+            style={{
+              background: "rgba(34,211,238,0.03)",
+              border: "1px solid rgba(34,211,238,0.1)",
+            }}
+          >
+            {stats && (
+              <>
+                <BreakdownRow label="Device"  data={stats.deviceBreakdown} />
+                <BreakdownRow label="Browser" data={stats.browserBreakdown} />
+                <BreakdownRow label="OS"      data={stats.osBreakdown} />
+              </>
+            )}
+            {!stats && (
+              <p className="text-xs opacity-30" style={{ fontFamily: "var(--font-jetbrains-mono)", color: "var(--bone-muted)" }}>
+                No data yet.
+              </p>
+            )}
+          </div>
         </div>
 
         {/* ── Log table ── */}
         <div
-          className="rounded overflow-hidden"
+          className="rounded overflow-hidden overflow-x-auto"
           style={{ border: "1px solid rgba(34,211,238,0.12)" }}
         >
-          {/* Table header */}
+          {/* Header */}
           <div
-            className="grid grid-cols-4 gap-4 px-5 py-3 text-xs tracking-widest uppercase opacity-40"
+            className="grid gap-3 px-5 py-3 text-xs tracking-widest uppercase opacity-40 min-w-180"
             style={{
+              gridTemplateColumns: "6rem 5rem 7rem 6rem 8rem 7rem 7rem 5rem",
               fontFamily: "var(--font-jetbrains-mono)",
               color: "var(--cyan)",
               borderBottom: "1px solid rgba(34,211,238,0.1)",
@@ -252,9 +360,13 @@ export function AuditDashboard() {
             }}
           >
             <span>Time</span>
-            <span>IP</span>
+            <span>Country</span>
+            <span>City</span>
+            <span>Device</span>
             <span>Browser</span>
             <span>OS</span>
+            <span>Screen</span>
+            <span>Timezone</span>
           </div>
 
           {/* Rows */}
@@ -270,36 +382,91 @@ export function AuditDashboard() {
               </div>
             )}
 
-            {!loading && logs.length === 0 && (
-              <div className="px-5 py-8 text-center">
-                <span
+            {!loading && events.length === 0 && (
+              <div className="px-5 py-10 text-center">
+                <p
                   className="text-xs opacity-30 tracking-widest"
                   style={{ fontFamily: "var(--font-jetbrains-mono)", color: "var(--bone-muted)" }}
                 >
                   No access events yet. Logs appear after the first unlock.
-                </span>
+                </p>
+                <p
+                  className="text-xs opacity-20 mt-2"
+                  style={{ fontFamily: "var(--font-jetbrains-mono)", color: "var(--bone-muted)" }}
+                >
+                  Add UPSTASH_REDIS_REST_URL + UPSTASH_REDIS_REST_TOKEN to Vercel env vars to enable persistence.
+                </p>
               </div>
             )}
 
-            {logs.map((log) => {
-              const { browser, os } = parseUA(log.ua);
+            {events.map((event) => {
+              const d = event.device;
+              const screen = d.screenW ? `${d.screenW}×${d.screenH}` : "—";
+              const tz = d.timezone
+                ? d.timezone.split("/").pop()?.replace(/_/g, " ") ?? d.timezone
+                : "—";
               return (
                 <div
-                  key={log.id}
-                  className="grid grid-cols-4 gap-4 px-5 py-3 text-xs hover:bg-white/[0.02] transition-colors"
-                  style={{ fontFamily: "var(--font-jetbrains-mono)" }}
+                  key={event.id}
+                  className="grid gap-3 px-5 py-3 text-xs hover:bg-white/2 transition-colors min-w-180"
+                  style={{
+                    gridTemplateColumns: "6rem 5rem 7rem 6rem 8rem 7rem 7rem 5rem",
+                    fontFamily: "var(--font-jetbrains-mono)",
+                  }}
                 >
-                  <span title={new Date(log.ts).toISOString()} style={{ color: "var(--bone)" }}>
-                    {timeAgo(log.ts)}
+                  <span
+                    title={new Date(event.ts).toLocaleString("en-IN")}
+                    style={{ color: "var(--bone)" }}
+                  >
+                    {timeAgo(event.ts)}
                   </span>
-                  <span style={{ color: "var(--cyan)", opacity: 0.7 }}>
-                    {maskIP(log.ip)}
+
+                  <span title={maskIP(d.ip)} style={{ color: "var(--cyan)", opacity: 0.8 }}>
+                    {d.country ? `${countryFlag(d.country)} ${d.country}` : "—"}
                   </span>
+
+                  <span
+                    className="truncate"
+                    title={d.city}
+                    style={{ color: "var(--bone-muted)" }}
+                  >
+                    {d.city || "—"}
+                  </span>
+
+                  <span title={d.deviceType} style={{ color: "var(--bone-muted)" }}>
+                    {deviceIcon(d.deviceType)}{" "}
+                    <span className="opacity-60">{d.deviceType.slice(0, 3)}</span>
+                  </span>
+
+                  <span style={{ color: "var(--bone)" }}>
+                    {d.browser}
+                    {d.browserVersion && (
+                      <span style={{ color: "var(--bone-muted)", opacity: 0.6 }}>
+                        {" "}{d.browserVersion}
+                      </span>
+                    )}
+                  </span>
+
                   <span style={{ color: "var(--bone-muted)" }}>
-                    {browser}
+                    {d.os}
+                    {d.osVersion && (
+                      <span style={{ opacity: 0.6 }}> {d.osVersion}</span>
+                    )}
                   </span>
-                  <span style={{ color: "var(--bone-muted)" }}>
-                    {os}
+
+                  <span style={{ color: "var(--bone-muted)", opacity: 0.7 }}>
+                    {screen}
+                    {d.colorDepth && (
+                      <span style={{ opacity: 0.5 }}> {d.colorDepth}bit</span>
+                    )}
+                  </span>
+
+                  <span
+                    className="truncate"
+                    title={d.timezone}
+                    style={{ color: "var(--bone-muted)", opacity: 0.6 }}
+                  >
+                    {tz}
                   </span>
                 </div>
               );
@@ -308,10 +475,10 @@ export function AuditDashboard() {
         </div>
 
         {/* ── Action bar ── */}
-        <div className="flex items-center justify-between gap-4 flex-wrap">
+        <div className="flex items-center justify-between gap-4 flex-wrap pb-8">
           <button
-            onClick={() => exportCSV(logs)}
-            disabled={logs.length === 0}
+            onClick={() => exportCSV(events)}
+            disabled={events.length === 0}
             className="text-xs px-4 py-2 rounded transition-all disabled:opacity-30"
             style={{
               background: "rgba(34,211,238,0.06)",
@@ -320,12 +487,12 @@ export function AuditDashboard() {
               fontFamily: "var(--font-jetbrains-mono)",
             }}
           >
-            ↓ Export CSV ({logs.length} records)
+            ↓ Export CSV ({events.length} records)
           </button>
 
           <button
             onClick={handleClear}
-            disabled={logs.length === 0 || clearing}
+            disabled={events.length === 0 || clearing}
             className="text-xs px-4 py-2 rounded transition-all disabled:opacity-30"
             style={{
               background: "rgba(217,70,239,0.04)",
@@ -337,18 +504,7 @@ export function AuditDashboard() {
             {clearing ? "Clearing…" : "Clear all logs"}
           </button>
         </div>
-
       </main>
-
-      {/* Footer */}
-      <footer className="py-6 text-center">
-        <p
-          className="text-xs opacity-15"
-          style={{ fontFamily: "var(--font-jetbrains-mono)", color: "var(--bone-muted)", letterSpacing: "0.2em" }}
-        >
-          SOIL CREST NATURALS · INTERNAL AUDIT · {new Date().getFullYear()}
-        </p>
-      </footer>
     </div>
   );
 }

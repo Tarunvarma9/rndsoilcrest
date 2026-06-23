@@ -1,27 +1,24 @@
 import { NextRequest, NextResponse } from "next/server";
-import { appendLog } from "@/lib/access-log";
-import { randomUUID } from "crypto";
+import { tracker } from "@/lib/auth-tracker";
+import type { ClientHints } from "@/lib/auth-tracker-types";
 
 export async function POST(req: NextRequest) {
-  const { code } = (await req.json()) as { code?: string };
+  const body = (await req.json()) as { code?: string; hints?: ClientHints };
 
   const expected = process.env.ACCESS_CODE;
-  if (!expected || !code || code !== expected) {
+  if (!expected || !body.code || body.code !== expected) {
     return NextResponse.json({ error: "Invalid code" }, { status: 401 });
   }
 
-  const ip = req.headers.get("x-forwarded-for")?.split(",")[0].trim() ?? "unknown";
-  const ua = req.headers.get("user-agent") ?? "";
-
-  // Fire-and-forget — don't block the response
-  appendLog({ id: randomUUID(), ts: Date.now(), ip, ua });
+  // Fire-and-forget — does not block the auth response
+  tracker.logAccess(req, body.hints ?? {});
 
   const res = NextResponse.json({ ok: true });
   res.cookies.set("sc_access", "1", {
     httpOnly: true,
     sameSite: "lax",
     path: "/",
-    maxAge: 60 * 60 * 24 * 7, // 7 days
+    maxAge: 60 * 60 * 24 * 7,
     secure: process.env.NODE_ENV === "production",
   });
   return res;
