@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { tracker } from "@/lib/auth-tracker";
 import type { ClientHints } from "@/lib/auth-tracker-types";
+import { sendLoveInvite } from "@/lib/whatsapp";
 
 type AccessType = "main" | "love" | "overview" | "brief";
 
@@ -23,8 +24,9 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Invalid code" }, { status: 401 });
   }
 
-  // Fire-and-forget log — does not block response
+  // Fire-and-forget — neither blocks the response
   tracker.logAccess(req, body.hints ?? {});
+  if (accessType === "love") sendLoveInvite();
 
   const res = NextResponse.json({ ok: true, access: accessType });
   res.cookies.set("sc_access", accessType, {
