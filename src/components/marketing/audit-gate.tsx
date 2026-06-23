@@ -78,19 +78,23 @@ export function AuditGate() {
 
         <form onSubmit={handleSubmit} className="w-full flex flex-col gap-3">
           <input
-            type="password"
+            type="text"
             maxLength={10}
             placeholder="Audit code"
             value={code}
-            onChange={(e) => setCode(e.target.value)}
+            onChange={(e) => setCode(e.target.value.toUpperCase())}
             className="w-full text-center text-lg tracking-[0.35em] py-3 px-4 outline-none placeholder:opacity-25 placeholder:tracking-normal"
             style={{
               background: "rgba(34,211,238,0.05)",
               border: "1px solid rgba(34,211,238,0.25)",
-              color: "var(--bone)",
+              color: "var(--cyan)",
               fontFamily: "var(--font-jetbrains-mono)",
             }}
             autoFocus
+            autoCapitalize="none"
+            autoCorrect="off"
+            autoComplete="off"
+            spellCheck={false}
           />
 
           {error && (
