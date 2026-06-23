@@ -2,18 +2,20 @@ import { NextRequest, NextResponse } from "next/server";
 import { tracker } from "@/lib/auth-tracker";
 import type { ClientHints } from "@/lib/auth-tracker-types";
 
-type AccessType = "main" | "love";
+type AccessType = "main" | "love" | "overview";
 
 export async function POST(req: NextRequest) {
   const body = (await req.json()) as { code?: string; hints?: ClientHints };
   const code = body.code ?? "";
 
-  const mainCode  = process.env.ACCESS_CODE ?? "";
-  const loveCode  = process.env.LOVE_CODE   ?? "";
+  const mainCode     = process.env.ACCESS_CODE     ?? "";
+  const loveCode     = process.env.LOVE_CODE       ?? "";
+  const overviewCode = process.env.OVERVIEW_CODE   ?? "";
 
   let accessType: AccessType | null = null;
-  if (mainCode && code === mainCode) accessType = "main";
-  if (loveCode && code === loveCode) accessType = "love";
+  if (mainCode     && code === mainCode)     accessType = "main";
+  if (loveCode     && code === loveCode)     accessType = "love";
+  if (overviewCode && code === overviewCode) accessType = "overview";
 
   if (!accessType) {
     return NextResponse.json({ error: "Invalid code" }, { status: 401 });
